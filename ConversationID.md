@@ -1,30 +1,16 @@
-<!-----
-NEW: Check the "Suppress top comment" option to remove this info from the output.
 
-Conversion time: 0.774 seconds.
+<p style="color: red; font-weight: bold">>>>>>  gd2md-html alert:  ERRORs: 0; WARNINGs: 1; ALERTS: 0.</p>
+<ul style="color: red; font-weight: bold"><li>See top comment block for details on ERRORs and WARNINGs. <li>In the converted Markdown or HTML, search for inline alerts that start with >>>>>  gd2md-html alert:  for specific instances that need correction.</ul>
 
-
-Using this Markdown file:
-
-1. Paste this output into your source file.
-2. See the notes and action items below regarding this conversion run.
-3. Check the rendered output (headings, lists, code blocks, tables) for proper
-   formatting and use a linkchecker before you publish this page.
-
-Conversion notes:
-
-* Docs to Markdown version 1.0β31
-* Sat Aug 28 2021 13:28:05 GMT-0700 (PDT)
-* Source doc: Activity Schema and id fields in Bot Framework
-* Tables are currently converted to HTML tables.
------>
+<p style="color: red; font-weight: bold">Links to alert messages:</p>
+<p style="color: red; font-weight: bold">>>>>> PLEASE check and correct alert issues and delete this message and the inline alerts.<hr></p>
 
 
 
-## Activity Schema and id fields in Bot Framework
+# Activity Schema and id fields in Bot Framework
 
 
-## Introduction
+# Introduction
 
 Our primary goal here is to look at the identifiers in the activity classes and the rules governing them. These identifiers are important With the addition of handoff features and media added features, we are now dealing with a wide range of different activities. These activities need to be handled differently based on their place of origin, their destination and content. These can be achieved by labelling and classifying the activities.
 
@@ -83,10 +69,10 @@ The activity object is a flat list of name/value pairs, some of which are primit
 </table>
 
 
-The entities sender and receiver are variable and interchangeable. For example, a bot can be sender and the client can be receiver and vice versa. When a bot or client sends an activity to a channel, it is typically a request for the activity to be recorded. When a channel sends an activity to a bot or client, it is typically a notification that the activity has already been recorded.
+The entities sender and receiver are variable and interchangeable. For example, a bot can be the sender and the client can be the receiver and vice versa. When a bot or client sends an activity to a channel, it is typically a request for the activity to be recorded. When a channel sends an activity to a bot or client, it is typically a notification that the activity has already been recorded.
 
 
-## Schema
+# Schema
 
 
 <table>
@@ -98,6 +84,81 @@ The entities sender and receiver are variable and interchangeable. For example, 
 Example: "channelId": "slack"
 <p>
 Channel IDs serve as namespaces for other IDs. Runtime calls in the Bot Framework protocol must take place within the context of a channel; the channel gives meaning to the conversation and account IDs used when communicating. By convention all channel IDs are lowercase.
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Channel Account ID</strong>
+   </td>
+   <td>Every bot and user has an account within each channel. The account contains an identifier (id) and other informative bot non-structural data, like an optional name.
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Channel Account Name</strong>
+   </td>
+   <td>Optional
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>
+<ul>
+
+<li>Channel accounts have meaning only within their associated channel.
+
+<li>More than one ID may resolve to the same account.
+
+<li>Ordinal comparison may be used to establish that two IDs are the same.
+
+<li>There is generally no comparison that can be used to identify whether two different IDs resolve to the same account, bot or person.
+
+<li>The stability of associations between IDs, accounts, mailboxes, and people depends on the channel.
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Conversation ID</strong>
+   </td>
+   <td>
+<ul>
+
+<li>Messages are sent and received in the context of a conversation, which is identifiable by ID.
+
+<li>Example: "conversation": { "id": "1234" }
+
+<li>A conversation contains an exchange of messages and other activities. Every conversation has zero or more activities, and every activity appears in exactly one conversation. 
+
+<li>Conversations may be perpetual, or may have distinct starts and ends. The process of creating, modifying, or ending a conversation occurs within the channel (i.e., a conversation exists when the channel is aware of it) and the characteristics of these processes are established by the channel. 
+
+<li>A conversation ID may not necessarily uniquely identify a single conversation within a channel even for a single bot.
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Service URL</strong>
+   </td>
+   <td>
+<ul>
+
+<li>Activities are frequently sent asynchronously, with separate transport connections for sending and receiving traffic. 
+
+<li>The serviceUrl field is used by channels to denote the URL where replies to the current activity may be sent. 
+
+<li>The value of the serviceUrl field is of type string.
+
+<li>Channels include the serviceUrl field in all activities they send to bots.
+
+<li>Channels use stable values for the serviceUrl field as bots may persist them for long periods, thus the value typically does not change with time
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Timestamp</strong>
+   </td>
+   <td>The timestamp field records the exact UTC time when the activity occurred.
    </td>
   </tr>
   <tr>
@@ -120,40 +181,312 @@ Not all activities are assigned identities (for example, a typing activity may n
 </ul>
    </td>
   </tr>
+</table>
+
+
+
+# Channelwise Identifiers
+
+
+## Slack
+
+
+### Test
+
+
+<table>
   <tr>
-   <td>
+   <td><strong>Deployment</strong>
+<p>
+<strong>Attempt</strong>
    </td>
-   <td>
+   <td><strong>Activity Object</strong>
+   </td>
+   <td><strong>Summary</strong>
    </td>
   </tr>
   <tr>
-   <td>
+   <td rowspan="3" >1
    </td>
-   <td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U013YPA2UNB:TBLAX038R","name":"mufaddal.k.bhanpurawa","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"B02BNGEJ9U1:TBLAX038R:C02CN11DSGN","name":"bottestmufaddal2","aadObjectId":null,"role":null},"channelId":"slack","serviceUrl":"https://slack.botframework.com/"},"ConnectionRequestTime":"2021-08-30T21:21:47.4069228Z"}</code>
    </td>
-  </tr>
-  <tr>
-   <td>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td>
-   </td>
-   <td>
-   </td>
-  </tr>
-  <tr>
-   <td>
-   </td>
-   <td>
+   <td>User ID : “<code>U013YPA2UNB:TBLAX038R</code>”
+<p>
+User Name : “<code>mufaddal.k.bhanpurawa</code>”
+<p>
+Conversation ID : “<code>B02BNGEJ9U1:TBLAX038R:C02CN11DSGN</code>”
+<p>
+Conversation name (Group Name) : “<code>bottestmufaddal2</code>”
+<p>
+Channel ID : “slack”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://slack.botframework.com/</a></code>”
    </td>
   </tr>
   <tr>
-   <td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U013YPA2UNB:TBLAX038R","name":"mufaddal.k.bhanpurawa","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"B02BNGEJ9U1:TBLAX038R:C02D7BKUAN5","name":"bottestmufaddal1","aadObjectId":null,"role":null},"channelId":"slack","serviceUrl":"https://slack.botframework.com/"},"ConnectionRequestTime":"2021-08-30T21:21:36.0553115Z"}</code>
+   </td>
+   <td>User ID : “<code>U013YPA2UNB:TBLAX038R</code>”
+<p>
+User Name : “<code>mufaddal.k.bhanpurawa</code>”
+<p>
+Conversation ID : “<code>B02BNGEJ9U1:TBLAX038R:C02D7BKUAN5</code>”
+<p>
+Conversation Name(group name) : “<code>bottestmufaddal1</code>”
+<p>
+Channel ID : “slack”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://slack.botframework.com/</a></code>”
+   </td>
+  </tr>
+  <tr>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U013YPA2UNB:TBLAX038R","name":"mufaddal.k.bhanpurawa","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"B02BNGEJ9U1:TBLAX038R:D02AV65NPV5","name":null,"aadObjectId":null,"role":null},"channelId":"slack","serviceUrl":"https://slack.botframework.com/"},"ConnectionRequestTime":"2021-08-30T21:14:41.3006338Z"}</code>
+   </td>
+   <td>User ID : “<code>U013YPA2UNB:TBLAX038R</code>”
+<p>
+User Name : “<code>mufaddal.k.bhanpurawa</code>”
+<p>
+Conversation ID : “<code>B02BNGEJ9U1:TBLAX038R:D02AV65NPV5</code>”
+<p>
+Conversation name (Group Name) : null
+<p>
+Channel ID : “slack”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://slack.botframework.com/</a></code>”
+   </td>
+  </tr>
+  <tr>
+   <td>2
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U013YPA2UNB:TBLAX038R","name":"mufaddal.k.bhanpurawa","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"B02BNGEJ9U1:TBLAX038R:D02AV65NPV5","name":null,"aadObjectId":null,"role":null},"channelId":"slack","serviceUrl":"https://slack.botframework.com/"},"ConnectionRequestTime":"2021-08-30T21:36:57.3999137Z"}</code>
+   </td>
+   <td>User ID : “<code>U013YPA2UNB:TBLAX038R</code>”
+<p>
+User Name : “<code>mufaddal.k.bhanpurawa</code>”
+<p>
+Conversation ID : “<code>B02BNGEJ9U1:TBLAX038R:D02AV65NPV5</code>”
+<p>
+Conversation name (Group Name) : null
+<p>
+Channel ID : “slack”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://slack.botframework.com/</a></code>”
+   </td>
+  </tr>
+</table>
+
+
+
+### Results
+
+
+<table>
+  <tr>
+   <td><strong>Property</strong>
+   </td>
+   <td>Description
+   </td>
+  </tr>
+  <tr>
+   <td>User ID
    </td>
    <td>
+<ul>
+
+<li>Points to User
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can uniquely identify users
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>User Name
+   </td>
+   <td>
+<ul>
+
+<li>Points to User
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can be used in complementary to user ID
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Conversation ID
+   </td>
+   <td>
+<ul>
+
+<li>Points to conversation
+
+<li>Points to the group in which conversation takes place
+
+<li>Changes for same user in different groups
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Conversation Name
+   </td>
+   <td>
+<ul>
+
+<li>In this case, this gives the name of the group in which conversation takes place
+
+<li>Changes for same user in different groups
+
+<li>If conversation does not takes place in group, then property value is null
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Channel ID
+   </td>
+   <td>
+<ul>
+
+<li>Slack, points to the channel
+</li>
+</ul>
+   </td>
+  </tr>
+</table>
+
+
+
+## Line
+
+
+### Test
+
+
+<table>
+  <tr>
+   <td><strong>Deployment</strong>
+<p>
+<strong>Attempt</strong>
+   </td>
+   <td><strong>Activity Object</strong>
+   </td>
+   <td><strong>Summary</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>1
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U4dc6b214db9b73c54a49929367c33df1","name":"bhanpuramufaddal","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"U4dc6b214db9b73c54a49929367c33df1|DZ3UsG1pmHG","name":null,"aadObjectId":null,"role":null},"channelId":"line","serviceUrl":"https://line.botframework.com/"},"ConnectionRequestTime":"2021-08-31T05:25:20.9910045Z"}</code>
+   </td>
+   <td>User ID : “<code>U4dc6b214db9b73c54a49929367c33df1</code>”
+<p>
+User Name : “<code>bhanpuramufaddal</code>”
+<p>
+Conversation ID : “<code>U4dc6b214db9b73c54a49929367c33df1|DZ3UsG1pmHG</code>”
+<p>
+Conversation name  : null
+<p>
+Channel ID : “line”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://line.botframework.com/</a></code>”
+   </td>
+  </tr>
+  <tr>
+   <td>2
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U4dc6b214db9b73c54a49929367c33df1","name":"bhanpuramufaddal","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"U4dc6b214db9b73c54a49929367c33df1|DZ3UsG1pmHG","name":null,"aadObjectId":null,"role":null},"channelId":"line","serviceUrl":"https://line.botframework.com/"},"ConnectionRequestTime":"2021-08-31T05:28:14.9584355Z"}</code>
+   </td>
+   <td>User ID : “<code>U4dc6b214db9b73c54a49929367c33df1</code>”
+<p>
+User Name : “<code>bhanpuramufaddal</code>”
+<p>
+Conversation ID : “<code>U4dc6b214db9b73c54a49929367c33df1|DZ3UsG1pmHG</code>”
+<p>
+Conversation name  : null
+<p>
+Channel ID : “line”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://line.botframework.com/</a></code>”
+   </td>
+  </tr>
+</table>
+
+
+
+### Results
+
+
+<table>
+  <tr>
+   <td><strong>Property</strong>
+   </td>
+   <td>Description
+   </td>
+  </tr>
+  <tr>
+   <td>User ID
+   </td>
+   <td>
+<ul>
+
+<li>Points to User
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can uniquely identify users
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>User Name
+   </td>
+   <td>
+<ul>
+
+<li>Points to User
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can be used in complementary to user ID
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Conversation ID
+   </td>
+   <td>
+<ul>
+
+<li>Points to conversation
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Not sure about about the group behaviour of conversation ID
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Channel ID
+   </td>
+   <td>
+<ul>
+
+<li>line, points to the channel
+</li>
+</ul>
    </td>
   </tr>
 </table>
