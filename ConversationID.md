@@ -1,7 +1,9 @@
-## Activity Schema and id fields in Bot Framework
+
+<h2>Activity Schema and id fields in Bot Framework</h2>
 
 
-## Introduction
+<h2>Introduction</h2>
+
 
 Our primary goal here is to look at the identifiers in the activity classes and the rules governing them. These identifiers are important With the addition of handoff features and media added features, we are now dealing with a wide range of different activities. These activities need to be handled differently based on their place of origin, their destination and content. These can be achieved by labelling and classifying the activities.
 
@@ -62,8 +64,8 @@ The activity object is a flat list of name/value pairs, some of which are primit
 
 The entities sender and receiver are variable and interchangeable. For example, a bot can be the sender and the client can be the receiver and vice versa. When a bot or client sends an activity to a channel, it is typically a request for the activity to be recorded. When a channel sends an activity to a bot or client, it is typically a notification that the activity has already been recorded.
 
+<h2>Schema</h2>
 
-## Schema
 
 
 <table>
@@ -175,14 +177,14 @@ Not all activities are assigned identities (for example, a typing activity may n
 </table>
 
 
-
-## Channelwise Identifiers
-
-
-### Slack
+<h2>Channelwise Identifiers</h2>
 
 
-#### Test
+<h3>Slack</h3>
+
+
+<h4>Test</h4>
+
 
 
 <table>
@@ -267,8 +269,8 @@ Service URL : “<code><a href="https://slack.botframework.com/">https://slack.b
 </table>
 
 
+<h4>Results</h4>
 
-#### Results
 
 
 <table>
@@ -356,11 +358,11 @@ Service URL : “<code><a href="https://slack.botframework.com/">https://slack.b
 </table>
 
 
+<h3>Line</h3>
 
-### Line
 
+<h4>Test</h4>
 
-#### Test
 
 
 <table>
@@ -413,8 +415,8 @@ Service URL : “<code><a href="https://slack.botframework.com/">https://line.bo
 </table>
 
 
+<h4>Results</h4>
 
-#### Results
 
 
 <table>
