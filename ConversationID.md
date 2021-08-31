@@ -1,5 +1,3 @@
-
-
 ## Activity Schema and id fields in Bot Framework
 
 
