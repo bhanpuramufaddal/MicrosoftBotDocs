@@ -1,16 +1,9 @@
 
-<p style="color: red; font-weight: bold">>>>>>  gd2md-html alert:  ERRORs: 0; WARNINGs: 1; ALERTS: 0.</p>
-<ul style="color: red; font-weight: bold"><li>See top comment block for details on ERRORs and WARNINGs. <li>In the converted Markdown or HTML, search for inline alerts that start with >>>>>  gd2md-html alert:  for specific instances that need correction.</ul>
 
-<p style="color: red; font-weight: bold">Links to alert messages:</p>
-<p style="color: red; font-weight: bold">>>>>> PLEASE check and correct alert issues and delete this message and the inline alerts.<hr></p>
+## Activity Schema and id fields in Bot Framework
 
 
-
-# Activity Schema and id fields in Bot Framework
-
-
-# Introduction
+## Introduction
 
 Our primary goal here is to look at the identifiers in the activity classes and the rules governing them. These identifiers are important With the addition of handoff features and media added features, we are now dealing with a wide range of different activities. These activities need to be handled differently based on their place of origin, their destination and content. These can be achieved by labelling and classifying the activities.
 
@@ -72,7 +65,7 @@ The activity object is a flat list of name/value pairs, some of which are primit
 The entities sender and receiver are variable and interchangeable. For example, a bot can be the sender and the client can be the receiver and vice versa. When a bot or client sends an activity to a channel, it is typically a request for the activity to be recorded. When a channel sends an activity to a bot or client, it is typically a notification that the activity has already been recorded.
 
 
-# Schema
+## Schema
 
 
 <table>
@@ -185,13 +178,13 @@ Not all activities are assigned identities (for example, a typing activity may n
 
 
 
-# Channelwise Identifiers
+## Channelwise Identifiers
 
 
-## Slack
+### Slack
 
 
-### Test
+#### Test
 
 
 <table>
@@ -277,7 +270,7 @@ Service URL : “<code><a href="https://slack.botframework.com/">https://slack.b
 
 
 
-### Results
+#### Results
 
 
 <table>
@@ -366,10 +359,10 @@ Service URL : “<code><a href="https://slack.botframework.com/">https://slack.b
 
 
 
-## Line
+### Line
 
 
-### Test
+#### Test
 
 
 <table>
@@ -423,7 +416,7 @@ Service URL : “<code><a href="https://slack.botframework.com/">https://line.bo
 
 
 
-### Results
+#### Results
 
 
 <table>
