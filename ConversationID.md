@@ -484,4 +484,4 @@ Service URL : “<code><a href="https://slack.botframework.com/">https://line.bo
   </tr>
 </table>
 
-![User and Conversation IDs](/Images/Screen.png?raw=true)
+![User and Conversation IDs](/Images/UserIDFlowchart.png?raw=true)
