@@ -549,60 +549,70 @@ Service URL : “<code><a href="https://smba.trafficmanager.net/in/">https://smb
 
 #### Results
 
-  <tr>
-   <td>**Property**
 
+<table>
+  <tr>
+   <td><strong>Property</strong>
    </td>
    <td>Description
-
    </td>
   </tr>
   <tr>
    <td>User ID
-
    </td>
    <td>
+<ul>
 
+<li>Points to User
 
-* Points to User
-* Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
-* Can uniquely identify users
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can uniquely identify users
+</li>
+</ul>
    </td>
   </tr>
   <tr>
-   <td>
-User Name
-
+   <td>User Name
    </td>
    <td>
+<ul>
 
+<li>Points to User
 
-* Points to User
-* Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
-* Can be used in complementary to user ID
-   </td>
-  </tr>
-  <tr>
-   <td>
-Conversation ID
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
 
-   </td>
-   <td>
-
-
-* Points to conversation
-* Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
-* Not sure about about the group behaviour of conversation ID
+<li>Can be used in complementary to user ID
+</li>
+</ul>
    </td>
   </tr>
   <tr>
-   <td>
-Channel ID
-
+   <td>Conversation ID
    </td>
    <td>
+<ul>
 
+<li>Points to conversation
 
-* msteams, points to the channel
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Not sure about about the group behaviour of conversation ID
+</li>
+</ul>
    </td>
   </tr>
+  <tr>
+   <td>Channel ID
+   </td>
+   <td>
+<ul>
+
+<li>msteams, points to the channel
+</li>
+</ul>
+   </td>
+  </tr>
+</table>
+
+
