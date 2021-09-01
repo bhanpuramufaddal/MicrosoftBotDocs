@@ -1,384 +1,608 @@
 
 
-# Azure Blob Storage
+## Activity Schema and id fields in Bot Framework
 
 
-# Overview
+## Introduction
 
-Azure Blob storage is Microsoft's object storage solution for the cloud. Blob storage is optimized for storing massive amounts of unstructured data.
+Our primary goal here is to look at the identifiers in the activity classes and the rules governing them. These identifiers are important With the addition of handoff features and media added features, we are now dealing with a wide range of different activities. These activities need to be handled differently based on their place of origin, their destination and content. These can be achieved by labelling and classifying the activities.
 
-Users or client applications can access objects in Blob storage via HTTP/HTTPS, from anywhere in the world. Objects in Blob storage are accessible via the Azure Storage REST API, Azure PowerShell, Azure CLI, or an Azure Storage client library. Client libraries are available for different languages, including:
-
-Azure Blob Storageは、Microsoftのクラウド向けオブジェクトストレージソリューションです。 BLOBストレージは、大量の非構造化データを格納するために最適化されています。
-
-ユーザーまたはクライアントアプリケーションは、世界中のどこからでも、HTTP / HTTPSを介してBlobストレージ内のオブジェクトにアクセスできます。 Blobストレージ内のオブジェクトには、Azure Storage REST API、Azure PowerShell、Azure CLI、またはAzureStorageクライアントライブラリを介してアクセスできます。クライアントライブラリは、次のようなさまざまな言語で利用できます。
-
-
-
-* [.NET](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/storage)
-* [Java](https://docs.microsoft.com/en-us/java/api/overview/azure/storage)
-* [Node.js](https://github.com/Azure/azure-sdk-for-js/tree/master/sdk/storage)
-* [Python](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-python)
-* [Go](https://github.com/azure/azure-storage-blob-go/)
-* [PHP](https://azure.github.io/azure-storage-php/)
-* [Ruby](https://azure.github.io/azure-storage-ruby)
-
-Ref : [https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview) 
-
-
-## Blob service REST API
-
-The REST API for the Blob service defines HTTP operations against the storage account, containers, and blobs. The API includes the operations listed in the following table.
-
-BlobサービスのRESTAPIは、ストレージアカウント、コンテナー、およびBLOBに対するHTTP操作を定義します。 APIには、次の表にリストされている操作が含
-
-Ref : [https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api](https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api)
+The activity object is a flat list of name/value pairs, some of which are primitive objects, and some of which are complex (nested). Schema here refers to the skeleton structure that represents the logical view of the entire activity class. It defines how the data is organized and how the relations among them are associated. It formulates all the constraints that are to be applied on the data. This will help us to create a dictionary with suitable key-value pairs in order to classify these activities.
 
 
 <table>
   <tr>
-   <td><strong>手術</strong>
+   <td>Channel
    </td>
-   <td><strong>リソースタイプ</strong>
-   </td>
-   <td><strong>説明</strong>
+   <td>Software that sends and receives activities, and transforms them to and from chat or application behaviors. 
    </td>
   </tr>
   <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/list-containers2?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コンテナの一覧表示</a>
+   <td>Bot
    </td>
-   <td>アカウント
-   </td>
-   <td>ストレージアカウント内のすべてのコンテナを一覧表示します。
+   <td>Software that sends and receives activities, and generates automated, semi-automated, or entirely manual responses. Bots have endpoints that are registered with channels.
    </td>
   </tr>
   <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/set-blob-service-properties?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobサービスのプロパティを設定する</a>
+   <td>Sender
    </td>
-   <td>アカウント
-   </td>
-   <td>ロギングとメトリックの設定を含むBlobサービスのプロパティ、およびデフォルトのサービスバージョンを設定します。
+   <td>Software transmitting an activity.
    </td>
   </tr>
   <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-blob-service-properties?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobサービスのプロパティを取得する</a>
+   <td>Receiver
    </td>
-   <td>アカウント
-   </td>
-   <td>ロギングとメトリックの設定を含むBlobサービスのプロパティ、およびデフォルトのサービスバージョンを取得します。
+   <td>Software accepting an activity.
    </td>
   </tr>
   <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/preflight-blob-request?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">プリフライトブロブリクエスト</a>
+   <td>Endpoint
    </td>
-   <td>アカウント
-   </td>
-   <td>実際のリクエストを送信する前に、Blobサービスのクロスオリジンリソースシェアリング（CORS）ルールを照会します。
+   <td>A programmatically addressable location where a bot or channel can receive activities.
    </td>
   </tr>
   <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-blob-service-stats?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobサービス統計を取得する</a>
+   <td>Address
    </td>
-   <td>アカウント
-   </td>
-   <td>Blobサービスのレプリケーションに関連する統計を取得します。この操作は、ストレージアカウントで読み取りアクセス地理冗長レプリケーションが有効になっている場合にのみ、セカンダリロケーションエンドポイントで使用できます。
+   <td>An identifier or address where a user or bot can be contacted.
    </td>
   </tr>
   <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-account-information?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">アカウント情報を取得する</a>
+   <td>Field
    </td>
-   <td>アカウント
-   </td>
-   <td>指定されたアカウントのSKU名とアカウントの種類を返します。
+   <td>A named value within an activity or nested object.
    </td>
   </tr>
   <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-user-delegation-key?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ユーザー委任キーを取得する</a>
+   <td>Client
    </td>
-   <td>アカウント
-   </td>
-   <td>ユーザー委任SAS（共有アクセス署名）に署名するために使用できるキーを取得します。ユーザー委任SASは、Azure Active Directory（Azure AD）資格情報を使用してBlobサービスのリソースへのアクセスを許可します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/create-container?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コンテナを作成する</a>
-   </td>
-   <td>容器
-   </td>
-   <td>ストレージアカウントに新しいコンテナを作成します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-container-properties?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コンテナのプロパティを取得する</a>
-   </td>
-   <td>容器
-   </td>
-   <td>コンテナのすべてのユーザー定義メタデータとシステムプロパティを返します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-container-metadata?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コンテナメタデータを取得する</a>
-   </td>
-   <td>容器
-   </td>
-   <td>コンテナのユーザー定義のメタデータのみを返します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/set-container-metadata?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コンテナメタデータの設定</a>
-   </td>
-   <td>容器
-   </td>
-   <td>コンテナのユーザー定義のメタデータを設定します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-container-acl?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コンテナACLを取得する</a>
-   </td>
-   <td>容器
-   </td>
-   <td>コンテナのパブリックアクセスポリシーと保存されているアクセスポリシーを取得します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/set-container-acl?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コンテナACLの設定</a>
-   </td>
-   <td>容器
-   </td>
-   <td>コンテナのパブリックアクセスポリシーと保存されているアクセスポリシーを設定します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/lease-container?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">リースコンテナ</a>
-   </td>
-   <td>容器
-   </td>
-   <td>削除操作のためにコンテナのロックを確立および管理します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/delete-container?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コンテナを削除する</a>
-   </td>
-   <td>容器
-   </td>
-   <td>コンテナとそれに含まれるすべてのBLOBを削除します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/list-blobs?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">リストブロブ</a>
-   </td>
-   <td>容器
-   </td>
-   <td>コンテナ内のすべてのBLOBを一覧表示します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/put-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ブロブを置く</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>新しいblobを作成するか、コンテナー内の既存のblobを置き換えます。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobを取得する</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>ユーザー定義のメタデータやシステムプロパティなど、Blobサービスからblobを読み取りまたはダウンロードします。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-blob-properties?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobプロパティを取得する</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>BLOB上のすべてのシステムプロパティとユーザー定義のメタデータを返します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/set-blob-properties?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobプロパティを設定する</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>既存のBLOBに対して定義されたシステムプロパティを設定します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/set-blob-expiry?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobの有効期限を設定する</a>
-   </td>
-   <td>ブロックブロブ
-   </td>
-   <td>既存のblobの有効期限を設定します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-blob-metadata?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobメタデータを取得する</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>既存のBLOBまたはスナップショットのすべてのユーザー定義メタデータを取得します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/set-blob-metadata?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobメタデータを設定する</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>既存のBLOBのユーザー定義メタデータを設定します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-blob-tags?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobタグを取得する</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>既存のBLOBのユーザー定義タグを取得します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/set-blob-tags?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobタグを設定する</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>セカンダリインデックスを形成する既存のblobのユーザー定義タグを設定します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/find-blobs-by-tags?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">タグでブロブを探す</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>ユーザー定義のタグでblobを一覧表示します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/delete-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobを削除する</a>
-   </td>
-   <td>ブロブをブロック、追加、ページングする
-   </td>
-   <td>ブロブに削除のマークを付けます。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/undelete-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobの削除を取り消す</a>
-   </td>
-   <td>ブロブをブロック、追加、ページングする
-   </td>
-   <td>ソフト削除されたBLOBおよび/または関連するすべてのソフト削除されたスナップショットのコンテンツとメタデータを復元します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/lease-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">リースブロブ</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>書き込みおよび削除操作のロックを確立および管理します。ロックされたblobを削除または書き込むには、クライアントがリースIDを提供する必要があります。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/snapshot-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">スナップショットブロブ</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>BLOBの読み取り専用スナップショットを作成します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/copy-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">Blobをコピーする</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>このストレージアカウントまたは別のストレージアカウントの宛先BLOBにソースBLOBをコピーします。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/abort-copy-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">コピーブロブを中止する</a>
-   </td>
-   <td>ブロブをブロック、追加、およびページングする
-   </td>
-   <td>保留中のCopy Blob操作を中止し、長さがゼロで完全なメタデータを持つ宛先BLOBを残します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/put-block?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ブロックを置く</a>
-   </td>
-   <td>ブロブのみをブロックする
-   </td>
-   <td>ブロックBLOBの一部としてコミットされる新しいブロックを作成します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/put-block-from-url?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">URLからブロックを置く</a>
-   </td>
-   <td>ブロブのみをブロックする
-   </td>
-   <td>コンテンツがURLから読み取られるブロックBLOBの一部としてコミットされる新しいブロックを作成します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/put-block-list?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ブロックリストを置く</a>
-   </td>
-   <td>ブロブのみをブロックする
-   </td>
-   <td>ブロックBLOBを構成するブロックIDのセットを指定することにより、BLOBをコミットします。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-block-list?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ブロックリストを取得</a>
-   </td>
-   <td>ブロブのみをブロックする
-   </td>
-   <td>ブロックBLOBの一部としてアップロードされたブロックのリストを取得します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/query-blob-contents?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">BLOBコンテンツのクエリ</a>
-   </td>
-   <td>ブロブのみをブロックする
-   </td>
-   <td>単純な構造化照会言語（SQL）ステートメントをBLOBのコンテンツに適用し、照会されたデータのサブセットのみを返します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/set-blob-tier?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ブロブ層を設定する</a>
-   </td>
-   <td>ブロックおよびページブロブ
-   </td>
-   <td>ブロブのティアを設定します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/put-page?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ページを置く</a>
-   </td>
-   <td>ページブロブのみ
-   </td>
-   <td>ページの範囲をページblobに書き込みます。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/get-page-ranges?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ページ範囲を取得する</a>
-   </td>
-   <td>ページブロブのみ
-   </td>
-   <td>ページBLOBまたはページBLOBのスナップショットの有効なページ範囲のリストを返します。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/incremental-copy-blob?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">インクリメンタルコピーブロブ</a>
-   </td>
-   <td>ページブロブのみ
-   </td>
-   <td>ソースページBLOBのスナップショットを宛先ページBLOBにコピーします。差分変更のみが転送されます。
-   </td>
-  </tr>
-  <tr>
-   <td><a href="https://docs-microsoft-com.translate.goog/en-us/rest/api/storageservices/append-block?_x_tr_sl=auto&_x_tr_tl=ja&_x_tr_hl=en&_x_tr_pto=ajax,elem">ブロックを追加</a>
-   </td>
-   <td>ブロブのみを追加する
-   </td>
-   <td>データのブロックを追加BLOBの最後に書き込みます。
+   <td>Software that sends and receives activities, typically on behalf of human users. Clients do not have endpoints. Also can be referred to as a user.
    </td>
   </tr>
 </table>
 
+
+The entities sender and receiver are variable and interchangeable. For example, a bot can be the sender and the client can be the receiver and vice versa. When a bot or client sends an activity to a channel, it is typically a request for the activity to be recorded. When a channel sends an activity to a bot or client, it is typically a notification that the activity has already been recorded.
+
+
+## Schema
+
+
+<table>
+  <tr>
+   <td><strong>Channel ID</strong>
+   </td>
+   <td>Every Bot Framework channel is identified by a unique ID. The value of the channelId field is of type string.
+<p>
+Example: "channelId": "slack"
+<p>
+Channel IDs serve as namespaces for other IDs. Runtime calls in the Bot Framework protocol must take place within the context of a channel; the channel gives meaning to the conversation and account IDs used when communicating. By convention all channel IDs are lowercase.
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Channel Account ID</strong>
+   </td>
+   <td>Every bot and user has an account within each channel. The account contains an identifier (id) and other informative bot non-structural data, like an optional name.
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Channel Account Name</strong>
+   </td>
+   <td>Optional
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>
+<ul>
+
+<li>Channel accounts have meaning only within their associated channel.
+
+<li>More than one ID may resolve to the same account.
+
+<li>Ordinal comparison may be used to establish that two IDs are the same.
+
+<li>There is generally no comparison that can be used to identify whether two different IDs resolve to the same account, bot or person.
+
+<li>The stability of associations between IDs, accounts, mailboxes, and people depends on the channel.
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Conversation ID</strong>
+   </td>
+   <td>
+<ul>
+
+<li>Messages are sent and received in the context of a conversation, which is identifiable by ID.
+
+<li>Example: "conversation": { "id": "1234" }
+
+<li>A conversation contains an exchange of messages and other activities. Every conversation has zero or more activities, and every activity appears in exactly one conversation. 
+
+<li>Conversations may be perpetual, or may have distinct starts and ends. The process of creating, modifying, or ending a conversation occurs within the channel (i.e., a conversation exists when the channel is aware of it) and the characteristics of these processes are established by the channel. 
+
+<li>A conversation ID may not necessarily uniquely identify a single conversation within a channel even for a single bot.
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Service URL</strong>
+   </td>
+   <td>
+<ul>
+
+<li>Activities are frequently sent asynchronously, with separate transport connections for sending and receiving traffic. 
+
+<li>The serviceUrl field is used by channels to denote the URL where replies to the current activity may be sent. 
+
+<li>The value of the serviceUrl field is of type string.
+
+<li>Channels include the serviceUrl field in all activities they send to bots.
+
+<li>Channels use stable values for the serviceUrl field as bots may persist them for long periods, thus the value typically does not change with time
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Timestamp</strong>
+   </td>
+   <td>The timestamp field records the exact UTC time when the activity occurred.
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Activity ID</strong>
+   </td>
+   <td>Activities are sent and received within the Bot Framework protocol, and these are sometimes identifiable. We can identify activities uniquely using activity ids
+<p>
+Example: "id": "5678"
+<p>
+Activity IDs are optional and are generated by the channels to give the bot a way to reference the ID in subsequent API calls, if they are available:
+<ul>
+
+<li>Replying to a particular activity
+
+<li>Querying for the list of participants at the activity level
+
+<p>
+Not all activities are assigned identities (for example, a typing activity may never be assigned an id.) The value of the id field is of type string.
+</li>
+</ul>
+   </td>
+  </tr>
+</table>
+
+
+
+## Channelwise Identifiers
+
+
+### Slack
+
+
+#### Test
+
+
+<table>
+  <tr>
+   <td><strong>Deployment</strong>
+<p>
+<strong>Attempt</strong>
+   </td>
+   <td><strong>Activity Object</strong>
+   </td>
+   <td><strong>Summary</strong>
+   </td>
+  </tr>
+  <tr>
+   <td rowspan="3" >1
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U013YPA2UNB:TBLAX038R","name":"mufaddal.k.bhanpurawa","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"B02BNGEJ9U1:TBLAX038R:C02CN11DSGN","name":"bottestmufaddal2","aadObjectId":null,"role":null},"channelId":"slack","serviceUrl":"https://slack.botframework.com/"},"ConnectionRequestTime":"2021-08-30T21:21:47.4069228Z"}</code>
+   </td>
+   <td>User ID : “<code>U013YPA2UNB:TBLAX038R</code>”
+<p>
+User Name : “<code>mufaddal.k.bhanpurawa</code>”
+<p>
+Conversation ID : “<code>B02BNGEJ9U1:TBLAX038R:C02CN11DSGN</code>”
+<p>
+Conversation name (Group Name) : “<code>bottestmufaddal2</code>”
+<p>
+Channel ID : “slack”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://slack.botframework.com/</a></code>”
+   </td>
+  </tr>
+  <tr>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U013YPA2UNB:TBLAX038R","name":"mufaddal.k.bhanpurawa","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"B02BNGEJ9U1:TBLAX038R:C02D7BKUAN5","name":"bottestmufaddal1","aadObjectId":null,"role":null},"channelId":"slack","serviceUrl":"https://slack.botframework.com/"},"ConnectionRequestTime":"2021-08-30T21:21:36.0553115Z"}</code>
+   </td>
+   <td>User ID : “<code>U013YPA2UNB:TBLAX038R</code>”
+<p>
+User Name : “<code>mufaddal.k.bhanpurawa</code>”
+<p>
+Conversation ID : “<code>B02BNGEJ9U1:TBLAX038R:C02D7BKUAN5</code>”
+<p>
+Conversation Name(group name) : “<code>bottestmufaddal1</code>”
+<p>
+Channel ID : “slack”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://slack.botframework.com/</a></code>”
+   </td>
+  </tr>
+  <tr>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U013YPA2UNB:TBLAX038R","name":"mufaddal.k.bhanpurawa","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"B02BNGEJ9U1:TBLAX038R:D02AV65NPV5","name":null,"aadObjectId":null,"role":null},"channelId":"slack","serviceUrl":"https://slack.botframework.com/"},"ConnectionRequestTime":"2021-08-30T21:14:41.3006338Z"}</code>
+   </td>
+   <td>User ID : “<code>U013YPA2UNB:TBLAX038R</code>”
+<p>
+User Name : “<code>mufaddal.k.bhanpurawa</code>”
+<p>
+Conversation ID : “<code>B02BNGEJ9U1:TBLAX038R:D02AV65NPV5</code>”
+<p>
+Conversation name (Group Name) : null
+<p>
+Channel ID : “slack”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://slack.botframework.com/</a></code>”
+   </td>
+  </tr>
+  <tr>
+   <td>2
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U013YPA2UNB:TBLAX038R","name":"mufaddal.k.bhanpurawa","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"B02BNGEJ9U1:TBLAX038R:D02AV65NPV5","name":null,"aadObjectId":null,"role":null},"channelId":"slack","serviceUrl":"https://slack.botframework.com/"},"ConnectionRequestTime":"2021-08-30T21:36:57.3999137Z"}</code>
+   </td>
+   <td>User ID : “<code>U013YPA2UNB:TBLAX038R</code>”
+<p>
+User Name : “<code>mufaddal.k.bhanpurawa</code>”
+<p>
+Conversation ID : “<code>B02BNGEJ9U1:TBLAX038R:D02AV65NPV5</code>”
+<p>
+Conversation name (Group Name) : null
+<p>
+Channel ID : “slack”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://slack.botframework.com/</a></code>”
+   </td>
+  </tr>
+</table>
+
+
+
+#### Results
+
+
+<table>
+  <tr>
+   <td><strong>Property</strong>
+   </td>
+   <td>Description
+   </td>
+  </tr>
+  <tr>
+   <td>User ID
+   </td>
+   <td>
+<ul>
+
+<li>Points to User
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can uniquely identify users
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>User Name
+   </td>
+   <td>
+<ul>
+
+<li>Points to User
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can be used in complementary to user ID
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Conversation ID
+   </td>
+   <td>
+<ul>
+
+<li>Points to conversation
+
+<li>Points to the group in which conversation takes place
+
+<li>Changes for same user in different groups
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Conversation Name
+   </td>
+   <td>
+<ul>
+
+<li>In this case, this gives the name of the group in which conversation takes place
+
+<li>Changes for same user in different groups
+
+<li>If conversation does not takes place in group, then property value is null
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Channel ID
+   </td>
+   <td>
+<ul>
+
+<li>Slack, points to the channel
+</li>
+</ul>
+   </td>
+  </tr>
+</table>
+
+
+
+### Line
+
+
+#### Test
+
+
+<table>
+  <tr>
+   <td><strong>Deployment</strong>
+<p>
+<strong>Attempt</strong>
+   </td>
+   <td><strong>Activity Object</strong>
+   </td>
+   <td><strong>Summary</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>1
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U4dc6b214db9b73c54a49929367c33df1","name":"bhanpuramufaddal","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"U4dc6b214db9b73c54a49929367c33df1|DZ3UsG1pmHG","name":null,"aadObjectId":null,"role":null},"channelId":"line","serviceUrl":"https://line.botframework.com/"},"ConnectionRequestTime":"2021-08-31T05:25:20.9910045Z"}</code>
+   </td>
+   <td>User ID : “<code>U4dc6b214db9b73c54a49929367c33df1</code>”
+<p>
+User Name : “<code>bhanpuramufaddal</code>”
+<p>
+Conversation ID : “<code>U4dc6b214db9b73c54a49929367c33df1|DZ3UsG1pmHG</code>”
+<p>
+Conversation name  : null
+<p>
+Channel ID : “line”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://line.botframework.com/</a></code>”
+   </td>
+  </tr>
+  <tr>
+   <td>2
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"U4dc6b214db9b73c54a49929367c33df1","name":"bhanpuramufaddal","aadObjectId":null,"role":null},"bot":null,"conversation":{"isGroup":false,"conversationType":null,"id":"U4dc6b214db9b73c54a49929367c33df1|DZ3UsG1pmHG","name":null,"aadObjectId":null,"role":null},"channelId":"line","serviceUrl":"https://line.botframework.com/"},"ConnectionRequestTime":"2021-08-31T05:28:14.9584355Z"}</code>
+   </td>
+   <td>User ID : “<code>U4dc6b214db9b73c54a49929367c33df1</code>”
+<p>
+User Name : “<code>bhanpuramufaddal</code>”
+<p>
+Conversation ID : “<code>U4dc6b214db9b73c54a49929367c33df1|DZ3UsG1pmHG</code>”
+<p>
+Conversation name  : null
+<p>
+Channel ID : “line”
+<p>
+Service URL : “<code><a href="https://slack.botframework.com/">https://line.botframework.com/</a></code>”
+   </td>
+  </tr>
+</table>
+
+
+
+#### Results
+
+
+<table>
+  <tr>
+   <td><strong>Property</strong>
+   </td>
+   <td>Description
+   </td>
+  </tr>
+  <tr>
+   <td>User ID
+   </td>
+   <td>
+<ul>
+
+<li>Points to User
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can uniquely identify users
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>User Name
+   </td>
+   <td>
+<ul>
+
+<li>Points to User
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Can be used in complementary to user ID
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Conversation ID
+   </td>
+   <td>
+<ul>
+
+<li>Points to conversation
+
+<li>Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+
+<li>Not sure about about the group behaviour of conversation ID
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Channel ID
+   </td>
+   <td>
+<ul>
+
+<li>line, points to the channel
+</li>
+</ul>
+   </td>
+  </tr>
+</table>
+
+
+
+### MS Teams
+
+
+#### Test
+
+
+<table>
+  <tr>
+   <td><strong>Deployment</strong>
+<p>
+<strong>Attempt</strong>
+   </td>
+   <td><strong>Activity Object</strong>
+   </td>
+   <td><strong>Summary</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>1
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"29:1AS69S4LnzIb0O5PNqViAj_5EfXhBjzR-64JTd1G7IYB40d_QozzFrTllhTRAwFqnvtG6xYuJn9zQe7Iyz2etZg","name":"mufaddal bhanpurawala","aadObjectId":"ba7a34f6-8b1e-4b86-8915-4a6b8f64c95a","role":null},"bot":null,"conversation":{"isGroup":null,"conversationType":"personal","id":"a:1jAHC-3JcuiFSqNpaZKUcjYovvS9LI0743GqY01qAc_M58PLttH6fLkqVX3de_wOgRE-YS5NEfbrkQnhFOOZTwJArp5wEgFxbkOVbx_O839UVCLIcfK_aCqZnn_x89cUU","name":null,"aadObjectId":null,"role":null,"tenantId":"b1185409-9f4a-4866-b9e5-bfa1b169006e"},"channelId":"msteams","serviceUrl":"https://smba.trafficmanager.net/in/"},"ConnectionRequestTime":"2021-09-01T04:58:49.1864407Z"}</code>
+   </td>
+   <td>User ID : “<code>29:1AS69S4LnzIb0O5PNqViAj_5EfXhBjzR-64JTd1G7IYB40d_QozzFrTllhTRAwFqnvtG6xYuJn9zQe7Iyz2etZg</code>”
+<p>
+User Name : “<code>mufaddal bhanpurawala</code>”
+<p>
+Conversation ID : “<code>a:1jAHC-3JcuiFSqNpaZKUcjYovvS9LI0743GqY01qAc_M58PLttH6fLkqVX3de_wOgRE-YS5NEfbrkQnhFOOZTwJArp5wEgFxbkOVbx_O839UVCLIcfK_aCqZnn_x89cUU</code>”
+<p>
+Conversation name  : null
+<p>
+Conversation type  : personal
+<p>
+Channel ID : “msteams”
+<p>
+Service URL : “<code><a href="https://smba.trafficmanager.net/in/">https://smba.trafficmanager.net/in/</a></code>’ 
+   </td>
+  </tr>
+  <tr>
+   <td>2
+   </td>
+   <td><code>{"Requestor":{"activityId":null,"user":{"id":"29:1AS69S4LnzIb0O5PNqViAj_5EfXhBjzR-64JTd1G7IYB40d_QozzFrTllhTRAwFqnvtG6xYuJn9zQe7Iyz2etZg","name":"mufaddal bhanpurawala","aadObjectId":"ba7a34f6-8b1e-4b86-8915-4a6b8f64c95a","role":null},"bot":null,"conversation":{"isGroup":null,"conversationType":"personal","id":"a:1jAHC-3JcuiFSqNpaZKUcjYovvS9LI0743GqY01qAc_M58PLttH6fLkqVX3de_wOgRE-YS5NEfbrkQnhFOOZTwJArp5wEgFxbkOVbx_O839UVCLIcfK_aCqZnn_x89cUU","name":null,"aadObjectId":null,"role":null,"tenantId":"b1185409-9f4a-4866-b9e5-bfa1b169006e"},"channelId":"msteams","serviceUrl":"https://smba.trafficmanager.net/in/"},"ConnectionRequestTime":"2021-09-01T19:35:43.0011876Z"}</code>
+   </td>
+   <td>User ID : “<code>29:1AS69S4LnzIb0O5PNqViAj_5EfXhBjzR-64JTd1G7IYB40d_QozzFrTllhTRAwFqnvtG6xYuJn9zQe7Iyz2etZg</code>”
+<p>
+User Name : “<code>mufaddal bhanpurawala</code>”
+<p>
+Conversation ID : “<code>a:1jAHC-3JcuiFSqNpaZKUcjYovvS9LI0743GqY01qAc_M58PLttH6fLkqVX3de_wOgRE-YS5NEfbrkQnhFOOZTwJArp5wEgFxbkOVbx_O839UVCLIcfK_aCqZnn_x89cUU</code>”
+<p>
+Conversation name  : null
+<p>
+Conversation type  : personal
+<p>
+Channel ID : “msteams”
+<p>
+Service URL : “<code><a href="https://smba.trafficmanager.net/in/">https://smba.trafficmanager.net/in/</a></code>’ 
+   </td>
+  </tr>
+</table>
+
+
+
+#### Results
+
+  <tr>
+   <td>**Property**
+
+   </td>
+   <td>Description
+
+   </td>
+  </tr>
+  <tr>
+   <td>User ID
+
+   </td>
+   <td>
+
+
+* Points to User
+* Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+* Can uniquely identify users
+   </td>
+  </tr>
+  <tr>
+   <td>
+User Name
+
+   </td>
+   <td>
+
+
+* Points to User
+* Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+* Can be used in complementary to user ID
+   </td>
+  </tr>
+  <tr>
+   <td>
+Conversation ID
+
+   </td>
+   <td>
+
+
+* Points to conversation
+* Remains stable irrespective of bot instance, does not change irrespective of bot or deployment
+* Not sure about about the group behaviour of conversation ID
+   </td>
+  </tr>
+  <tr>
+   <td>
+Channel ID
+
+   </td>
+   <td>
+
+
+* msteams, points to the channel
+   </td>
+  </tr>
