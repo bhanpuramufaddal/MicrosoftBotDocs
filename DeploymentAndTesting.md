@@ -49,10 +49,14 @@ The solution contains a bot with waterfall dialog, multiturn QNA dialog, prompt 
 - In Visual Studio , `Project` -> `Restore Nuget Packages`
 - `Build` -> `Clean All`
 - `Build` -> `Rebuild All`
-- ![Clean and Rebuild](/Images/CleanRebuild.png)
+<br><br>
+![Clean and Rebuild](/Images/CleanRebuild.png)
 - `Visual Studio` -> `Accounts` -> Add you Microsoft Azure Account
-- ![Create Account 1](/Images/CreateAccount1.png)
-- ![Create Account 2](/Images/CreateAccount2.png)
+<br><br>
+![Create Account 1](/Images/CreateAccount1.png)
+<br><br>
+![Create Account 2](/Images/CreateAccount2.png)
 - `Build` -> `Publish` -> `Refresh` -> Choose the App Service in which you want to publish the bot -> `Publish`<br>
 In the case of Staging Enviroment Tenant 1, use stgTenant1Bot App Service in stg_testTenant1 Resource Group
--  ![Publish](/Images/Publish.png)
+<br><br>
+![Publish](/Images/Publish.png)
