@@ -24,15 +24,13 @@ The solution contains a bot with waterfall dialog, multiturn QNA dialog, prompt 
 ## To try this sample
 
 - Clone the repository
-- Use value for ConnectionString as ```Endpoint=https://config-ai-dev-helpmeee-jp.azconfig.io;Id=vwv+-ld-s0:RNf4C4AESK1X9Vx43tEY;Secret=ko3Vr+nyLvFIhNUUN4e9E+s0eadgKHcdPVJ+5jfomRM=```
 
     ```bash
     git clone --single-branch --branch staging https://github.com/sou-project/azure-chatbot
     ```
-1. ```cd azure-chatbot```
-5. ```dotnet run```
-### Or you can also open and run the bot in Visual Studio. You would stil need to do steps 1-4 before on the terminal before you run in Visual Studio
-
+- Open Visual Studio, 
+- In Visual Studio, open the bot project
+- Run the project without Debugging, `Run` -> `Start Without Debugging`
 
 ## Testing the bot using Bot Framework Emulator
 
@@ -43,4 +41,12 @@ The solution contains a bot with waterfall dialog, multiturn QNA dialog, prompt 
 
 - Launch Bot Framework Emulator
 - File -> Open Bot
-- Enter a Bot URL of `http://localhost:3978/api/messages`, and input `MicrosoftAppId` and `MicrosoftAppPassword` from  [appsetting.json](/appsettings.json)
+- Enter a Bot URL of `http://localhost:3978/api/messages`, and input `MicrosoftAppId` and `MicrosoftAppPassword` from  [appsetting.json](https://github.com/sou-project/azure-chatbot/blob/staging/appsettings.json)
+
+## Deploying on Azure
+- In Visual Studio , `Project` -> `Restore Nuget Packages`
+- `Build` -> `Clean All`
+- `Build` -> `Rebuild All`
+- `Visual Studio` -> `Accounts` -> Add you Microsoft Azure Account
+- `Build` -> `Publish` -> `Refresh` -> Choose the App Service in which you want to publish the bot -> `Publish`<br>
+In the case of Staging Enviroment Tenant 1, use stgTenant1Bot App Service in stg_testTenant1 Resource Group
