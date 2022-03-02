@@ -7,7 +7,7 @@ This bot has been created using [Bot Framework](https://dev.botframework.com). T
 ## Prerequisites
 
 - [.NET Core ](https://dotnet.microsoft.com/en-us/download)
-- [Visual Studio](https://visualstudio.microsoft.com/downloads/)
+- [Visual Studio](https://visualstudio.microsoft.com/downloads/) Community Edition
 - [Bot Framework Emulator](https://github.com/microsoft/botframework-emulator)
 
   ```bash
